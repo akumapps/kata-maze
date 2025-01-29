@@ -1,16 +1,17 @@
-package fr.maze.original.algorithms;
+package fr.maze.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import fr.maze.original.MazeAlgorithm;
-import fr.maze.original.model.Cell;
+import fr.maze.MazeAlgorithm;
+import fr.maze.model.Cell;
 
-public class OptimizedOriginalMazeAlgorithm extends MazeAlgorithm {
+public class OriginalMazeAlgorithm extends MazeAlgorithm {
 
-    public OptimizedOriginalMazeAlgorithm(int rows, int columns) {
+    public OriginalMazeAlgorithm(int rows, int columns) {
         super(rows, columns);
+
     }
 
     @Override
@@ -40,28 +41,23 @@ public class OptimizedOriginalMazeAlgorithm extends MazeAlgorithm {
         Random r = new Random();
         for (Cell[] gridRow : grid) {
             for (Cell cell : gridRow) {
-                List<Cell> neighbors = new ArrayList<>();
+                List<Cell> neighbors = new ArrayList<Cell>();
                 if (cell.getNorth() != null) {
                     neighbors.add(cell.getNorth());
-                }
-                if (cell.getSouth() != null) {
-                    neighbors.add(cell.getSouth());
                 }
                 if (cell.getEast() != null) {
                     neighbors.add(cell.getEast());
                 }
-                if (cell.getWest() != null) {
-                    neighbors.add(cell.getWest());
+
+                Cell neighborCell = null;
+                if (neighbors.size() > 0) {
+                    int randomIndex = r.ints(1, 0, neighbors.size()).findFirst().getAsInt();
+                    neighborCell = neighbors.get(randomIndex);
                 }
 
-                if (!neighbors.isEmpty()) {
-                    int randomIndex = r.nextInt(neighbors.size());
-                    Cell neighborCell = neighbors.get(randomIndex);
-
-                    if (neighborCell != null) {
-                        cell.getNeighbors().put(neighborCell, true);
-                        neighborCell.getNeighbors().put(cell, true);
-                    }
+                if (neighborCell != null) {
+                    cell.getNeighbors().put(neighborCell, true);
+                    neighborCell.getNeighbors().put(cell, true);
                 }
             }
         }

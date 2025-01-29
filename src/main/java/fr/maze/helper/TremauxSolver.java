@@ -1,6 +1,6 @@
-package fr.maze.original.helper;
+package fr.maze.helper;
 
-import fr.maze.original.model.Cell;
+import fr.maze.model.Cell;
 
 import java.util.HashSet;
 import java.util.Set;

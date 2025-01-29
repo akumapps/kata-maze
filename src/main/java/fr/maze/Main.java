@@ -1,4 +1,4 @@
-package fr.maze.original;
+package fr.maze;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,13 +7,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.maze.original.algorithms.KruskalMazeAlgorithm;
-import fr.maze.original.algorithms.OptimizedOriginalMazeAlgorithm;
-import fr.maze.original.algorithms.OriginalMazeAlgorithm;
-import fr.maze.original.helper.ComplexitySolver;
-import fr.maze.original.helper.Metrics;
-import fr.maze.original.helper.TremauxSolver;
-import fr.maze.original.model.Cell;
+import fr.maze.algorithms.KruskalMazeAlgorithm;
+import fr.maze.algorithms.OptimizedOriginalMazeAlgorithm;
+import fr.maze.algorithms.OriginalMazeAlgorithm;
+import fr.maze.helper.ComplexitySolver;
+import fr.maze.helper.Metrics;
+import fr.maze.helper.TremauxSolver;
+import fr.maze.model.Cell;
 
 public class Main {
 

@@ -1,4 +1,4 @@
-package fr.maze.original.algorithms;
+package fr.maze.algorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import fr.maze.original.MazeAlgorithm;
-import fr.maze.original.model.Cell;
+import fr.maze.MazeAlgorithm;
+import fr.maze.model.Cell;
 
 public class KruskalMazeAlgorithm extends MazeAlgorithm {
 

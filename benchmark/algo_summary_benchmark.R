@@ -50,7 +50,7 @@ ggplot(averaged_data, aes(x = interaction(rows, columns), y = avg_complexity, co
 # memoryUsage 
 ggplot(averaged_data, aes(x = interaction(rows, columns), y = avg_memoryUsage, color = algorythmName, group = algorythmName)) +
   geom_point(size = 3) +  
-  geom_line() +  s
+  geom_line() +
   labs(title = "Average Memory Usage for Each Algorithm", 
        x = "Rows x Columns", 
        y = "Average Memory Usage (bytes)") +

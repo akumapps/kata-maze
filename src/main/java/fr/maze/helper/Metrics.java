@@ -1,5 +1,5 @@
 
-package fr.maze.original.helper;
+package fr.maze.helper;
 
 import java.io.Serializable;
 

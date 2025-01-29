@@ -1,4 +1,4 @@
-package fr.maze.original.model;
+package fr.maze.model;
 
 import java.util.HashMap;
 import java.util.Map;

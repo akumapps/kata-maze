@@ -1,6 +1,6 @@
-package fr.maze.original;
+package fr.maze;
 
-import fr.maze.original.model.Cell;
+import fr.maze.model.Cell;
 
 public abstract class MazeAlgorithm {
     protected Cell[][] grid;
