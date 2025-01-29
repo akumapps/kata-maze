@@ -6,7 +6,7 @@ Generate random mazes
 ## Notice
 Refactor as much as possible
 
-
+'''
 +---+---+---+---+---+---+---+
 |                           |
 +---+   +   +   +---+   +   +
@@ -22,8 +22,7 @@ Refactor as much as possible
 +   +   +---+---+---+   +   +
 |   |   |               |   |
 +---+---+---+---+---+---+---+
-
-
+'''
 
 # Kata Maze
 
