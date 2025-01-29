@@ -1,104 +1,94 @@
 package fr.maze.original;
 
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fr.maze.original.algorithms.KruskalMazeAlgorithm;
+import fr.maze.original.algorithms.OptimizedOriginalMazeAlgorithm;
+import fr.maze.original.algorithms.OriginalMazeAlgorithm;
+import fr.maze.original.helper.ComplexitySolver;
+import fr.maze.original.helper.Metrics;
+import fr.maze.original.helper.TremauxSolver;
+import fr.maze.original.model.Cell;
 
 public class Main {
 
   public static void main(String[] args) {
 
-    int rows = 7;
-    int columns = 7;
-    Cell[][] grid = new Cell[rows][columns];
-    Random r = new Random();
+    List<Metrics> metrics = new ArrayList<Metrics>();
 
-    //initialize the maze
-    for (int row = 0; row < rows; row++) {
-      for (int column = 0; column < columns; column++) {
-        grid[row][column] = new Cell(row, column);
-      }
+    int iterations = args.length > 0 ? Integer.parseInt(args[0]) : 10;
+    String fileName = args.length > 1 ? args[1] : "metrics.json";
+
+    // Run the different algorithms and collect metrics
+    for (int i = 0; i < iterations; i++) {
+      metrics.add(testMazeAlgo(new OriginalMazeAlgorithm(5, 5), true));
+      metrics.add(testMazeAlgo(new OriginalMazeAlgorithm(10, 10), true));
+      metrics.add(testMazeAlgo(new OriginalMazeAlgorithm(50, 50), false));
+      metrics.add(testMazeAlgo(new OriginalMazeAlgorithm(100, 100), false));
+
+      metrics.add(testMazeAlgo(new OptimizedOriginalMazeAlgorithm(5, 5), true));
+      metrics.add(testMazeAlgo(new OptimizedOriginalMazeAlgorithm(10, 10), true));
+      metrics.add(testMazeAlgo(new OptimizedOriginalMazeAlgorithm(50, 50), false));
+      metrics.add(testMazeAlgo(new OptimizedOriginalMazeAlgorithm(100, 100), false));
+
+      metrics.add(testMazeAlgo(new KruskalMazeAlgorithm(5, 5), true));
+      metrics.add(testMazeAlgo(new KruskalMazeAlgorithm(10, 10), true));
+      metrics.add(testMazeAlgo(new KruskalMazeAlgorithm(50, 50), false));
+      metrics.add(testMazeAlgo(new KruskalMazeAlgorithm(100, 100), false));
     }
 
-    for (Cell[] gridRow : grid) {
-      for (Cell cell : gridRow) {
-        int row = cell.getRow();
-        int column = cell.getColumn();
-
-        cell.setNorth(getGridCell(row - 1, column, grid, rows, columns));
-        cell.setSouth(getGridCell(row + 1, column, grid, rows, columns));
-        cell.setWest(getGridCell(row, column - 1, grid, rows, columns));
-        cell.setEast(getGridCell(row, column + 1, grid, rows, columns));
-      }
-    }
-
-    //compute the maze : BinaryTree algorithm used here
-    for (Cell[] gridRow : grid) {
-      for (Cell cell : gridRow) {
-        List<Cell> neighbors = new ArrayList<Cell>();
-        if (cell.getNorth() != null) {
-          neighbors.add(cell.getNorth());
-        }
-        if (cell.getEast() != null) {
-          neighbors.add(cell.getEast());
-        }
-
-        Cell neighborCell = null;
-        if (neighbors.size() > 0) {
-          int randomIndex = r.ints(1, 0, neighbors.size()).findFirst().getAsInt();
-          neighborCell = neighbors.get(randomIndex);
-        }
-
-        if (neighborCell != null) {
-          cell.getNeighbors().put(neighborCell, true);
-          neighborCell.getNeighbors().put(cell, true);
-        }
-      }
-    }
-
-    //Display the maze
-    StringBuffer sb = new StringBuffer();
-
-    sb.append("+");
-    for (int colCount = 0; colCount < columns; colCount++) {
-      sb.append("---+");
-    }
-    sb.append("\n");
-
-    for (Cell[] row : grid) {
-      StringBuffer top = new StringBuffer();
-      top.append("|");
-      StringBuffer bottom = new StringBuffer();
-      bottom.append("+");
-
-      for (Cell cell : row) {
-        cell = (cell == null ? new Cell(-1, -1) : cell);
-
-        boolean islinked = (cell.getNeighbors().get(cell.getEast()) != null ?
-                cell.getNeighbors().get(cell.getEast()).booleanValue() : false);
-
-        String eastBoundary = (islinked ? " " : "|");
-        top.append("   ").append(eastBoundary);
-
-        islinked = (cell.getNeighbors().get(cell.getSouth()) != null ?
-                cell.getNeighbors().get(cell.getSouth()).booleanValue() : false);
-
-        String southBoundary = (islinked ? "   " : "---");
-        bottom.append(southBoundary).append("+");
-      }
-
-      sb.append(top).append("\n");
-      sb.append(bottom).append("\n");
-    }
-
-    System.out.println(sb.toString());
+    printResult(metrics, fileName);
   }
 
-  private static Cell getGridCell(int row, int column, Cell[][] grid, int rows, int columns) {
-    Cell resultCell = null;
-    if ((row >= 0 && row < rows) &&
-            (column >= 0 && (column < columns))) {
-      resultCell = grid[row][column];
+  private static Metrics testMazeAlgo(MazeAlgorithm mazeAlgorithm, boolean render) {
+
+    int rows = mazeAlgorithm.getRows();
+    int columns = mazeAlgorithm.getColumns();
+
+    mazeAlgorithm.initialize();
+    Runtime runtime = Runtime.getRuntime();
+    runtime.gc();
+    long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+
+    long startTime = System.currentTimeMillis();
+
+    mazeAlgorithm.compute();
+
+    long endTime = System.currentTimeMillis();
+    long executionTime = endTime - startTime;
+
+    long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
+    long memoryUsage = memoryAfter - memoryBefore;
+
+    if (render) {
+      mazeAlgorithm.render();
     }
-    return resultCell;
+
+    Cell[][] grid = mazeAlgorithm.getGrid();
+    boolean solvable = TremauxSolver.solve(grid[0][0], grid[rows - 1][columns - 1]);
+
+    int complexity = ComplexitySolver.complexity(grid);
+
+    Metrics metrics = new Metrics(mazeAlgorithm.getClass().getSimpleName(), executionTime, memoryUsage, complexity,
+        solvable, rows, columns);
+    System.out.println(metrics);
+
+    return metrics;
   }
 
+  private static void printResult(List<Metrics> metrics, String fileName) {
+    ObjectMapper mapper = new ObjectMapper();
+
+    try {
+
+      mapper.writeValue(new File(fileName), metrics);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }
