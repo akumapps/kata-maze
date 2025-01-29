@@ -85,7 +85,7 @@ To run the `main()` method and generate mazes using the different algorithms, fo
 
 
    ```sh
-   mvn exec:java -Dexec.mainClass="fr.maze.original.Main" -Dexec.args="10 metrics.json"
+   mvn exec:java -Dexec.mainClass="fr.maze.Main" -Dexec.args="10 metrics.json"
    ```
     * The first argument (10) specifies the number of iterations.
     * The second argument (metrics.json) specifies the output file for the metrics.
@@ -104,13 +104,13 @@ Below are the benchmark results for the different maze generation algorithms:
 
 #### Execution Time
 
-![Execution Time](resources/execution_time.png)
+![Execution Time](./benchmark/execution_time.png)
 
 
 #### Complexity
 
-![Complexity](resources/complexity.png)
+![Complexity](./benchmark/complexity.png)
 
 #### Memory Usage
 
-![Memory Usage](resources/memory_usage.png)
+![Memory Usage](./benchmark/memory_usage.png)
