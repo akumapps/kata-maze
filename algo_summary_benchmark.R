@@ -3,8 +3,15 @@ library(dbplyr)
 library(tidyverse)
 library(ggplot2)
 
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) == 0) {
+  args <- c("metrics.json")
+}
+
 #load json results
-algo_data <- fromJSON("/Users/njaure/Documents/Mehdi/output.json")
+json_file_path <- args[1]
+algo_data <- fromJSON(json_file_path)
+
 
 #transform json to dataframe 
 output_dataframe <- as.data.frame(algo_data)
@@ -48,5 +55,3 @@ ggplot(averaged_data, aes(x = interaction(rows, columns), y = avg_memoryUsage, c
        x = "Rows x Columns", 
        y = "Average Memory Usage (bytes)") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
